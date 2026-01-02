@@ -871,8 +871,11 @@ $('#searchForm').on('submit', function(e) {
     </div>
   `);
 
-  const proxy = "https://api.allorigins.win/raw?url=";
   const apiUrl = "https://sim-data.ftgmhacks.workers.dev/?number=" + encodeURIComponent(input);
+
+$.getJSON(apiUrl, function(response) {
+  console.log(response);
+});
 
   $.getJSON(proxy + encodeURIComponent(apiUrl), function(response) {
     if (response && response.success && response.data && response.data.length > 0) {
@@ -938,4 +941,5 @@ function displayResults(data) {
 </script>
 </body>
 </html>
+
 
