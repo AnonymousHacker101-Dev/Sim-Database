@@ -902,61 +902,82 @@ function displayResults(data) {
   `;
 
   $('#resultsContent').html(html);
-}
-
-// ================= SEARCH =================
-let currentUserData = null;
-
-$('#searchForm').on('submit', function (e) {
-  e.preventDefault();
-
-  const input = $('#searchInput').val().trim();
-  if (!input) return;
-
-  const resultsContainer = $('#resultsContainer');
-  const resultsContent = $('#resultsContent');
-
-  resultsContainer.addClass('active');
-  resultsContent.html(`
-    <div class="loading">
-      <i class="fas fa-spinner"></i>
-      <div>Scanning Database...</div>
-    </div>
-  `);
-
-  const apiUrl =
-    "https://sim.f-a-k.workers.dev/?q=" +
-    encodeURIComponent(input);
-
-  $.getJSON(apiUrl)
-    .done(function (response) {
-      if (response && response.success && response.data && response.data.length > 0) {
-        currentUserData = response.data[0];
-        displayResults(currentUserData);
-      } else {
-        resultsContent.html(`
-          <div class="error-message">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div>No Data Found</div>
-          </div>
-        `);
-      }
-    })
-    .fail(function () {
-      resultsContent.html(`
-        <div class="error-message">
-          <i class="fas fa-times-circle"></i>
-          <div>Temporary connection issue</div>
-        </div>
-      `);
-    });
 });
-</script>
+  
+<script>
+        const API_URL = "https://sim.f-a-k.workers.dev/?q="; 
+        
+        const loader = document.getElementById('loader');
+        const resArea = document.getElementById('results-area');
+        const input = document.getElementById('target');
+
+        async function fetchData() {
+            const query = input.value.trim();
+            
+            if(query.length < 3) {
+                alert("Please enter a valid number.");
+                return;
+            }
+
+            // UI Reset
+            resArea.innerHTML = '';
+            resArea.style.display = 'block';
+            loader.style.display = 'block';
+            
+            try {
+                // Fake delay for 'Pro' feel
+                await new Promise(r => setTimeout(r, 800));
+
+                const req = await fetch(API_URL + query);
+                const json = await req.json();
+                
+                loader.style.display = 'none';
+
+                if(json.status === 'success') {
+                    renderCards(json.data);
+                } else {
+                    resArea.innerHTML = `<div style="text-align:center; color:#ff4444; margin-top:10px;">No Data Found</div>`;
+                }
+
+            } catch (e) {
+                loader.style.display = 'none';
+                resArea.innerHTML = `<div style="text-align:center; color:#ff4444; margin-top:10px;">Connection Error</div>`;
+            }
+        }
+
+        function renderCards(data) {
+            let records = [];
+            if (Array.isArray(data)) records = data;
+            else if (typeof data === 'object' && data !== null) records = [data];
+
+            let html = '';
+            records.forEach((rec, idx) => {
+                html += `
+                <div class="data-card">
+                    <div class="dc-header">
+                        <span>RECORD #${idx + 1}</span>
+                        <span><i class="fas fa-check-circle"></i> VERIFIED</span>
+                    </div>
+                    <div class="dc-body">
+                `;
+                
+                for (const [key, val] of Object.entries(rec)) {
+                    if(key === 'response_code' || key === 'credit' || key === 'api_owner') continue;
+                    html += `
+                        <div class="dc-row">
+                            <span class="lbl">${key.toUpperCase()}</span>
+                            <span class="val">${val}</span>
+                        </div>
+                    `;
+                }
+                html += `</div></div>`;
+            });
+
+            resArea.innerHTML = html;
+        }
+        
+        // Enter key support
+        input.addEventListener("keypress", (e) => { if(e.key==="Enter") fetchData(); });
+    </script>
 </body>
 </html>
-
-
-
-
-
-
