@@ -748,7 +748,7 @@ footer {
       <i class="fab fa-whatsapp"></i>
       <span>Contact WhatsApp</span>
     </a>
-    <a href="https://whatsapp.com/channel/0029VbBhNn1KgsNr47ZTsg1C" target="_blank" class="menu-item">
+    <a href="" target="_blank" class="menu-item">
       <i class="fas fa-broadcast-tower"></i>
       <span>Join Channel</span>
     </a>
@@ -774,7 +774,7 @@ footer {
           type="text" 
           id="searchInput" 
           class="search-input" 
-          placeholder="ЁЯФН Enter Mobile Number or CNIC"
+          placeholder="Ёnter Mobile Number or CNIC Without 0"
           required
         >
         <button type="submit" class="search-btn">
@@ -793,7 +793,7 @@ footer {
 <!-- Footer -->
 <footer>
   <div class="credit-text">Developed by SALAR KING</div>
-  <div class="credit-name">┬й Shadow Cyber Ops |</div>
+  <div class="credit-name">┬ Shadow Cyber Ops |</div>
 </footer>
 
   <script>
@@ -904,7 +904,7 @@ function displayResults(data) {
 });
   
 // API
-        const API_URL = "https://sim.f-a-k.workers.dev/?q="; 
+        const API_URL = "https://amscript.xyz/PublicApi/Siminfo.php?number="; 
         
         const loader = document.getElementById('loader');
         const resArea = document.getElementById('results-area');
@@ -914,7 +914,7 @@ function displayResults(data) {
             const query = input.value.trim();
             
             if(query.length < 3) {
-                alert("Please enter a valid number.");
+                alert("Please enter a valid number without 0");
                 return;
             }
 
