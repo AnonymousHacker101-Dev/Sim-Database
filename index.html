@@ -2,501 +2,302 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>⟡ CYBER DATABASE V4 ⟡ | SIM Data Lookup</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S4L4R-X • SIM DATABASE</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
 
 :root {
-  --primary-red: #ff1744;
-  --secondary-red: #ff6070;
-  --dark-bg: #0a0a0f;
-  --glass-bg: rgba(15, 12, 20, 0.75);
-  --glass-border: rgba(255, 23, 68, 0.35);
-  --glow: #ff1744;
-  --text-primary: #ff3b5c;
-  --text-secondary: #ffa0b0;
-  --card-dark: rgba(10, 8, 15, 0.85);
+  --primary-red: #ff0041;
+  --secondary-red: #ff0088;
+  --dark-bg: #0a0a0e;
+  --glass-bg: rgba(20, 10, 15, 0.6);
+  --glass-border: rgba(255, 0, 65, 0.25);
+  --glow-color: #ff0041;
+  --text-primary: #ff0041;
+  --text-secondary: #ff88aa;
 }
 
 [data-theme="light"] {
-  --primary-red: #c2185b;
-  --secondary-red: #e91e63;
-  --dark-bg: #fef5f7;
-  --glass-bg: rgba(255, 240, 243, 0.85);
-  --glass-border: rgba(194, 24, 91, 0.4);
-  --glow: #c2185b;
-  --text-primary: #880e4f;
-  --text-secondary: #ad1457;
-  --card-dark: rgba(255, 235, 240, 0.95);
+  --primary-red: #cc0033;
+  --secondary-red: #ff0044;
+  --dark-bg: #f5e8e9;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(204, 0, 51, 0.3);
+  --glow-color: #cc0033;
+  --text-primary: #4d001a;
+  --text-secondary: #660022;
 }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Segoe UI', 'Rajdhani', 'Orbitron', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Rajdhani', sans-serif;
   background: var(--dark-bg);
-  background-image: radial-gradient(circle at 15% 30%, rgba(255, 23, 68, 0.12) 0%, transparent 45%),
-                    radial-gradient(circle at 85% 70%, rgba(255, 96, 112, 0.08) 0%, transparent 50%);
+  background-image: radial-gradient(circle at 20% 50%, rgba(255, 0, 65, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(255, 0, 136, 0.08) 0%, transparent 50%);
   color: var(--text-primary);
   min-height: 100vh;
-  transition: background 0.3s ease, color 0.2s;
-  backdrop-filter: blur(0px);
+  transition: all 0.5s ease;
 }
 
-/* WELCOME POPUP (as required but legal disclaimer) */
+/* Welcome Popup */
 .welcome-popup {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.94);
-  backdrop-filter: blur(18px);
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(15px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 20000;
-  animation: fadeIn 0.3s ease;
+  z-index: 10000;
 }
 
 .popup-content {
-  background: linear-gradient(135deg, rgba(20, 10, 15, 0.98), rgba(10, 5, 12, 0.98));
-  border: 2px solid var(--primary-red);
-  border-radius: 2rem;
-  padding: 2rem 2rem 2rem 2rem;
-  max-width: 480px;
+  background: linear-gradient(145deg, rgba(30, 10, 15, 0.95), rgba(20, 5, 10, 0.95));
+  border: 3px solid var(--primary-red);
+  border-radius: 30px;
+  padding: 50px 40px;
+  max-width: 450px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 0 65px rgba(255, 23, 68, 0.6), inset 0 0 20px rgba(255, 23, 68, 0.2);
-  animation: slideUp 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  box-shadow: 0 0 60px rgba(255, 0, 65, 0.5);
+  animation: popupSlide 0.5s ease;
 }
 
-.popup-icon {
-  font-size: 4rem;
-  color: var(--primary-red);
-  filter: drop-shadow(0 0 15px var(--glow));
-  margin-bottom: 1rem;
-}
-
-.popup-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 1.9rem;
-  font-weight: 900;
-  letter-spacing: 2px;
-  margin-bottom: 0.75rem;
-}
-
-.popup-text {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  margin: 1rem 0 1.5rem;
-  line-height: 1.5;
-}
-
-.popup-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
+.popup-icon { font-size: 72px; color: var(--primary-red); margin-bottom: 25px; animation: bounce 2s infinite; }
+.popup-title { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: var(--primary-red); text-shadow: 0 0 30px var(--glow-color); margin-bottom: 15px; }
+.popup-text { font-size: 18px; color: var(--text-secondary); margin-bottom: 35px; }
 .popup-btn {
-  padding: 12px 28px;
-  border-radius: 60px;
-  font-weight: bold;
+  padding: 18px 35px;
   border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.2s;
+  border-radius: 15px;
+  font-size: 18px;
   font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  display: inline-block;
+  margin: 0 10px;
 }
+.popup-btn.join { background: var(--primary-red); color: white; box-shadow: 0 0 30px rgba(255, 0, 65, 0.6); }
+.popup-btn.cancel { background: transparent; border: 2px solid var(--primary-red); color: var(--primary-red); }
 
-.popup-btn.join {
-  background: var(--primary-red);
-  color: white;
-  box-shadow: 0 0 16px var(--glow);
-}
-
-.popup-btn.join:hover {
-  transform: scale(1.02);
-  background: #ff3366;
-  box-shadow: 0 0 28px var(--glow);
-}
-
-.popup-btn.cancel {
-  background: transparent;
-  border: 2px solid var(--primary-red);
-  color: var(--primary-red);
-}
-
-/* NAVBAR */
+/* Navbar */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  padding: 12px 28px;
+  padding: 15px 30px;
   background: var(--glass-bg);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--glass-border);
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
 }
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logo-img {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 2px solid var(--primary-red);
-  box-shadow: 0 0 20px var(--glow);
-  object-fit: cover;
-}
-
-.logo-text {
-  font-family: 'Orbitron', monospace;
-  font-weight: 900;
-  font-size: 1.3rem;
-  letter-spacing: 2px;
-}
-
-.nav-controls {
-  display: flex;
-  gap: 18px;
-}
-
+.logo-container { display: flex; align-items: center; gap: 15px; }
+.logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary-red); box-shadow: 0 0 25px var(--glow-color); }
+.logo-text { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900; color: var(--primary-red); text-shadow: 0 0 20px var(--glow-color); }
+.nav-controls { display: flex; gap: 20px; }
 .theme-toggle, .menu-toggle {
   background: transparent;
-  border: 1.5px solid var(--primary-red);
+  border: 2px solid var(--primary-red);
   color: var(--primary-red);
-  padding: 8px 18px;
-  border-radius: 40px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.2s;
-}
-
-.menu-toggle {
   padding: 8px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
+.menu-toggle { font-size: 20px; }
 
-.theme-toggle:hover, .menu-toggle:hover {
-  background: var(--primary-red);
-  color: white;
-  transform: scale(0.97);
-  box-shadow: 0 0 15px var(--glow);
-}
-
-/* SIDEBAR */
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
-  right: -360px;
+  right: -350px;
   width: 320px;
   height: 100vh;
   background: var(--glass-bg);
-  backdrop-filter: blur(28px);
+  backdrop-filter: blur(25px);
   border-left: 1px solid var(--glass-border);
-  z-index: 1500;
-  transition: right 0.35s ease-out;
-  padding: 90px 24px 30px;
+  z-index: 1001;
+  transition: right 0.4s ease;
+  padding: 80px 30px 30px;
 }
-
-.sidebar.active {
-  right: 0;
-}
-
+.sidebar.active { right: 0; }
 .sidebar-close {
   position: absolute;
   top: 20px;
-  right: 24px;
-  font-size: 28px;
-  background: none;
+  right: 20px;
+  background: transparent;
   border: none;
   color: var(--primary-red);
+  font-size: 30px;
   cursor: pointer;
 }
-
-.menu-items {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
+.menu-items { display: flex; flex-direction: column; gap: 20px; margin-top: 30px; }
 .menu-item {
-  background: rgba(20, 10, 20, 0.7);
+  background: var(--glass-bg);
   border: 2px solid var(--glass-border);
-  border-radius: 50px;
-  padding: 14px 20px;
+  border-radius: 15px;
+  padding: 20px;
+  text-align: center;
   text-decoration: none;
   color: var(--text-primary);
-  font-weight: bold;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  transition: 0.2s;
+  transition: all 0.3s ease;
 }
+.menu-item:hover { background: rgba(255, 0, 65, 0.15); border-color: var(--primary-red); }
 
-.menu-item:hover {
-  border-color: var(--primary-red);
-  background: rgba(255, 23, 68, 0.2);
-  transform: translateX(-6px);
-}
+/* Container */
+.container { max-width: 1200px; margin: 120px auto 50px; padding: 0 20px; }
+.title-section { text-align: center; margin-bottom: 50px; }
+.main-title { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; color: var(--primary-red); text-shadow: 0 0 30px var(--glow-color); letter-spacing: 4px; }
+.subtitle { font-size: 18px; color: var(--text-secondary); letter-spacing: 3px; text-transform: uppercase; }
 
-/* MAIN */
-.container {
-  max-width: 1250px;
-  margin: 110px auto 50px;
-  padding: 0 24px;
-}
-
-.title-section {
-  text-align: center;
-  margin-bottom: 45px;
-}
-
-.main-title {
-  font-family: 'Orbitron', monospace;
-  font-size: 2.7rem;
-  font-weight: 900;
-  text-shadow: 0 0 12px var(--glow);
-  letter-spacing: 3px;
-}
-
-.subtitle {
-  letter-spacing: 2px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
+/* Search Box */
 .search-box {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border);
-  border-radius: 38px;
-  padding: 30px 35px;
-  margin-bottom: 45px;
-  transition: 0.2s;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  backdrop-filter: blur(25px);
+  border: 2px solid var(--glass-border);
+  border-radius: 25px;
+  padding: 40px;
+  margin-bottom: 40px;
 }
-
-.input-group {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
+.input-group { display: flex; gap: 15px; flex-wrap: wrap; }
 .search-input {
   flex: 1;
-  padding: 16px 24px;
-  background: rgba(0, 0, 0, 0.55);
+  min-width: 250px;
+  padding: 18px 25px;
+  background: rgba(0, 0, 0, 0.5);
   border: 2px solid var(--glass-border);
-  border-radius: 60px;
-  font-size: 1.1rem;
+  border-radius: 15px;
   color: var(--text-primary);
-  font-weight: 600;
+  font-size: 18px;
   outline: none;
-  transition: 0.2s;
 }
-
-.search-input:focus {
-  border-color: var(--primary-red);
-  box-shadow: 0 0 25px rgba(255, 23, 68, 0.5);
-}
-
+.search-input:focus { border-color: var(--primary-red); box-shadow: 0 0 30px rgba(255, 0, 65, 0.4); }
 .search-btn {
-  padding: 0 32px;
+  padding: 18px 40px;
   background: transparent;
   border: 2px solid var(--primary-red);
-  border-radius: 60px;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
+  border-radius: 15px;
   color: var(--primary-red);
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
+.search-btn:hover { background: var(--primary-red); color: white; }
 
-.search-btn:hover {
-  background: var(--primary-red);
-  color: white;
-  box-shadow: 0 0 20px var(--glow);
-}
-
-.results-container {
-  display: none;
-}
-
-.results-container.active {
-  display: block;
-  animation: fadeUp 0.45s ease;
-}
-
-.data-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 28px;
-}
-
+/* Results */
+.results-container { display: none; }
+.results-container.active { display: block; animation: fadeInUp 0.5s ease; }
+.data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px; }
 .data-card {
-  background: var(--card-dark);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--glass-border);
-  border-radius: 28px;
-  padding: 26px 24px;
-  transition: 0.25s;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  background: linear-gradient(145deg, rgba(30, 10, 15, 0.7), rgba(20, 5, 10, 0.7));
+  backdrop-filter: blur(25px);
+  border: 2px solid var(--glass-border);
+  border-radius: 25px;
+  padding: 35px;
+  transition: all 0.4s ease;
 }
-
-.data-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--primary-red);
-  box-shadow: 0 14px 32px rgba(255, 23, 68, 0.3);
-}
-
+.data-card:hover { transform: translateY(-8px); border-color: var(--primary-red); }
 .card-icon {
-  width: 55px;
-  height: 55px;
-  background: rgba(255, 23, 68, 0.2);
-  border-radius: 30px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, rgba(255, 0, 65, 0.2), rgba(255, 0, 136, 0.2));
+  border: 3px solid var(--primary-red);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
-  margin-bottom: 20px;
-  border: 1px solid var(--primary-red);
+  color: var(--primary-red);
+  margin-bottom: 25px;
 }
+.card-label { font-size: 14px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 12px; }
+.card-value { font-size: 22px; color: var(--text-primary); font-weight: 700; word-break: break-word; }
+.loading { text-align: center; padding: 60px; font-size: 24px; color: var(--primary-red); }
+.error-message { text-align: center; padding: 40px; background: rgba(255, 0, 0, 0.15); border: 2px solid rgba(255, 0, 0, 0.4); border-radius: 20px; color: #ff4444; font-size: 20px; }
 
-.card-label {
-  font-size: 0.75rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 10px;
-}
+footer { margin-top: 80px; padding: 40px 20px; text-align: center; background: var(--glass-bg); border-top: 1px solid var(--glass-border); }
+.credit-name { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; color: var(--primary-red); text-shadow: 0 0 20px var(--glow-color); }
 
-.card-value {
-  font-size: 1.35rem;
-  font-weight: 700;
-  word-break: break-word;
-  line-height: 1.3;
-}
+@keyframes popupSlide { from { opacity: 0; transform: translateY(-50px) scale(0.8); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-.loading-state {
-  text-align: center;
-  padding: 55px;
-}
-
-.loading-state i {
-  font-size: 3rem;
-  animation: spin 1s infinite;
-  filter: drop-shadow(0 0 12px var(--glow));
-}
-
-.error-card {
-  background: rgba(255, 30, 70, 0.18);
-  border: 1px solid #ff4560;
-  padding: 25px;
-  border-radius: 28px;
-  text-align: center;
-  font-weight: bold;
-}
-
-footer {
-  margin-top: 80px;
-  text-align: center;
-  padding: 32px 20px;
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--glass-border);
-}
-
-.credit-name {
-  font-family: monospace;
-  font-weight: 800;
-  font-size: 1.4rem;
-  letter-spacing: 3px;
-  margin-top: 8px;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
-
-@media (max-width: 650px) {
-  .main-title { font-size: 1.9rem; }
-  .search-box { padding: 22px; }
+@media (max-width: 768px) {
+  .main-title { font-size: 32px; }
   .input-group { flex-direction: column; }
-  .search-btn { justify-content: center; padding: 12px; }
+  .search-input, .search-btn { width: 100%; }
+  .data-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<div id="welcomePopup" class="welcome-popup">
+<!-- Welcome Popup -->
+<div class="welcome-popup" id="welcomePopup">
   <div class="popup-content">
-    <div class="popup-icon"><i class="fas fa-database"></i></div>
-    <div class="popup-title">⚠️ LEGAL ACCESS</div>
-    <div class="popup-text">
-      This tool demonstrates structured SIM data retrieval using public demonstration APIs.<br>
-      <strong>100% legal demo mode</strong> — all displayed records are anonymized samples for UI testing.<br>
-      No real personal data is accessed without consent.
-    </div>
-    <div class="popup-buttons">
-      <button class="popup-btn join" id="acceptBtn">✅ I UNDERSTAND</button>
-      <button class="popup-btn cancel" id="declineBtn">❌ DECLINE</button>
+    <div class="popup-icon"><i class="fas fa-dragon"></i></div>
+    <div class="popup-title">CHAOS AWAKEN</div>
+    <div class="popup-text">Welcome to S4L4R-X DATABASE. Unfiltered SIM records. Resonance unlocked.</div>
+    <div>
+      <button class="popup-btn join" onclick="closePopup()">ENTER</button>
+      <button class="popup-btn cancel" onclick="closePopup()">IGNORE</button>
     </div>
   </div>
 </div>
 
+<!-- Navbar -->
 <nav class="navbar">
   <div class="logo-container">
-    <img src="https://i.ibb.co/s93hw1ZC/BIO-Pic2.jpg" alt="avatar" class="logo-img" onerror="this.src='https://placehold.co/60x60/ff1744/white?text=SK'">
-    <div class="logo-text">S4L4R-X | DB V4</div>
+    <img src="https://i.ibb.co/s93hw1ZC/BIO-Pic2.jpg" alt="Logo" class="logo-img">
+    <div class="logo-text">SALAR KING</div>
   </div>
   <div class="nav-controls">
-    <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
-    <button class="menu-toggle" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+    <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    <button class="menu-toggle" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
   </div>
 </nav>
 
-<div class="sidebar" id="sidebarMenu">
-  <button class="sidebar-close" id="closeSidebarBtn"><i class="fas fa-times"></i></button>
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <button class="sidebar-close" onclick="toggleMenu()"><i class="fas fa-times"></i></button>
   <div class="menu-items">
-    <a href="https://wa.me/923368231284" target="_blank" class="menu-item"><i class="fab fa-whatsapp"></i> Contact WA</a>
-    <a href="#" class="menu-item" id="channelLink"><i class="fas fa-broadcast-tower"></i> Join Channel</a>
-    <a href="#" class="menu-item" id="premiumLink"><i class="fas fa-gem"></i> Premium Access</a>
+    <a href="https://wa.me/923368231284" target="_blank" class="menu-item"><i class="fab fa-whatsapp"></i><span>Contact WhatsApp</span></a>
+    <a href="#" onclick="alert('Coming Soon')" class="menu-item"><i class="fas fa-broadcast-tower"></i><span>Join Channel</span></a>
+    <a href="#" onclick="alert('Premium Feature Coming Soon')" class="menu-item"><i class="fas fa-star"></i><span>Premium</span></a>
   </div>
 </div>
 
+<!-- Main -->
 <div class="container">
   <div class="title-section">
-    <h1 class="main-title">◈ S4L4R-KING DB ◈</h1>
-    <p class="subtitle">〄 PREMIUM SIM & CNIC LOOKUP ENGINE 〄</p>
+    <h1 class="main-title">S4L4R-X DATA BASE V4</h1>
+    <p class="subtitle">PREMIUM SIM DATABASE LOOKUP</p>
   </div>
 
   <div class="search-box">
     <form id="searchForm">
       <div class="input-group">
-        <input type="text" id="searchNumberInput" class="search-input" placeholder="📱 Enter Mobile or CNIC (digits only, without 0)" autocomplete="off">
-        <button type="submit" class="search-btn"><i class="fas fa-radar"></i> EXTRACT DATA</button>
+        <input type="text" id="searchInput" class="search-input" placeholder="Enter Mobile Number or CNIC Without 0" required>
+        <button type="submit" class="search-btn"><i class="fas fa-search"></i> Scan Database</button>
       </div>
     </form>
   </div>
@@ -507,251 +308,89 @@ footer {
 </div>
 
 <footer>
-  <div class="credit-text">DEVELOPED BY SALAR KING | CYBER SECURITY R&D</div>
-  <div class="credit-name">⚡ SHADOW CYBER OPS ⚡</div>
+  <div class="credit-text">Developed by SALAR KING</div>
+  <div class="credit-name">┬ Shadow Cyber Ops |</div>
 </footer>
 
 <script>
-// ----------------------- POPUP HANDLING + LEGAL DISCLAIMER -----------------
-const popup = document.getElementById('welcomePopup');
-const acceptBtn = document.getElementById('acceptBtn');
-const declineBtn = document.getElementById('declineBtn');
-
-function closeWelcomePopup() {
-  if(popup) {
-    popup.style.opacity = '0';
-    setTimeout(() => { popup.style.display = 'none'; }, 280);
-  }
+// Popup
+function closePopup() {
+  const popup = document.getElementById('welcomePopup');
+  if(popup) popup.style.display = 'none';
 }
 
-acceptBtn.addEventListener('click', () => {
-  localStorage.setItem('popupAccepted', 'true');
-  closeWelcomePopup();
-});
-
-declineBtn.addEventListener('click', () => {
-  localStorage.setItem('popupAccepted', 'false');
-  closeWelcomePopup();
-  alert("You declined the terms. The tool works in demo educational mode only.");
-});
-
-if(localStorage.getItem('popupAccepted') === 'true') {
-  popup.style.display = 'none';
-}
-
-// stop popup content click propagation
-document.querySelector('.popup-content')?.addEventListener('click', (e) => e.stopPropagation());
-
-// --------------- THEME SWITCH ---------------
+// Theme
 function toggleTheme() {
   const body = document.body;
-  if (body.getAttribute('data-theme') === 'light') {
+  const btn = document.querySelector('.theme-toggle i');
+  if(body.getAttribute('data-theme') === 'light') {
     body.removeAttribute('data-theme');
-    document.querySelector('#themeToggleBtn i').className = 'fas fa-moon';
+    btn.className = 'fas fa-moon';
   } else {
     body.setAttribute('data-theme', 'light');
-    document.querySelector('#themeToggleBtn i').className = 'fas fa-sun';
+    btn.className = 'fas fa-sun';
   }
 }
-document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
 
-// --------------- SIDEBAR MENU ---------------
-const sidebar = document.getElementById('sidebarMenu');
-function openMenu() { sidebar.classList.add('active'); }
-function closeMenu() { sidebar.classList.remove('active'); }
-document.getElementById('menuToggleBtn').addEventListener('click', openMenu);
-document.getElementById('closeSidebarBtn').addEventListener('click', closeMenu);
-document.addEventListener('click', (e) => {
-  if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && !document.getElementById('menuToggleBtn').contains(e.target)) {
-    closeMenu();
+// Menu
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('active');
+}
+document.addEventListener('click', function(e) {
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.querySelector('.menu-toggle');
+  if(sidebar && menuBtn && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+    sidebar.classList.remove('active');
   }
 });
-document.getElementById('channelLink')?.addEventListener('click', (e) => { e.preventDefault(); alert("🔔 Join our official channel (coming soon) – stay updated!"); });
-document.getElementById('premiumLink')?.addEventListener('click', (e) => { e.preventDefault(); alert("✨ Premium tier unlocks advanced analytics. Contact support."); });
 
-// ------------------- CORE FETCH ENGINE (LEGAL DEMO with SIMULATED RESPONSE + ACTUAL API FALLBACK) -----------------
-// we respect legal usage: the API endpoint is a public demo that returns sample/real test data if available.
-// But to prevent "no response" issue, we setup robust handling AND a secondary mock generator for safety & instant feedback.
-// The tool triggers actual API first then fallback to realistic rich mock data if endpoint fails or returns empty.
-
-const API_ENDPOINT = "https://amscript.xyz/PublicApi/Siminfo.php?number=";
-let isSearching = false;
-
-const searchForm = document.getElementById('searchForm');
-const searchInput = document.getElementById('searchNumberInput');
-const resultsContainer = document.getElementById('resultsContainer');
-const resultsContent = document.getElementById('resultsContent');
-
-function showLoading() {
-  resultsContainer.classList.add('active');
-  resultsContent.innerHTML = `<div class="loading-state"><i class="fas fa-circle-notch"></i><h3>SCANNING SECURE DATABASE...</h3><p>Encrypted lookup in progress</p></div>`;
+// Display Results
+function displayResults(data) {
+  const html = `
+    <div class="data-grid">
+      <div class="data-card"><div class="card-icon"><i class="fas fa-user"></i></div><div class="card-label">Full Name</div><div class="card-value">${data.name || data.full_name || 'N/A'}</div></div>
+      <div class="data-card"><div class="card-icon"><i class="fas fa-phone"></i></div><div class="card-label">Mobile Number</div><div class="card-value">${data.number || data.mobile || data.phone || 'N/A'}</div></div>
+      <div class="data-card"><div class="card-icon"><i class="fas fa-id-card"></i></div><div class="card-label">CNIC Number</div><div class="card-value">${data.cnic || data.id_number || data.id || 'N/A'}</div></div>
+      <div class="data-card"><div class="card-icon"><i class="fas fa-user-tie"></i></div><div class="card-label">Father Name</div><div class="card-value">${data.father_name || data.father || 'N/A'}</div></div>
+      <div class="data-card" style="grid-column:1/-1"><div class="card-icon"><i class="fas fa-map-marker-alt"></i></div><div class="card-label">Complete Address</div><div class="card-value">${data.address || data.add || 'N/A'}</div></div>
+    </div>
+  `;
+  document.getElementById('resultsContent').innerHTML = html;
 }
 
-function hideLoading() { /* content managed by render */ }
+// Search Handler
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('searchForm');
+  const input = document.getElementById('searchInput');
+  const resultsContainer = document.getElementById('resultsContainer');
+  const resultsContent = document.getElementById('resultsContent');
 
-// generate professional mock data for demo legal usage (ensures user always sees a response)
-function generateMockData(query) {
-  const cleanQuery = query.replace(/\D/g, '');
-  const isCnic = cleanQuery.length === 13 || cleanQuery.length === 12;
-  const fakeNames = ["M. Asif Raza", "Fatima Zafar Ali", "Hamza Tariq Malik", "Sara Bilal Khan", "Ahmed Raza Chaudhry", "Zainab Akhtar", "Salar Ahmed Khan"];
-  const addresses = ["House # 44, Street 12, F-10/4 Islamabad", "Flat 3B, Bukhari Commercial, DHA Lahore", "Near Ghanta Ghar, Saddar Rawalpindi", "Main Boulevard, Gulshan-e-Iqbal Karachi", "Phase 7, Bahria Town Lahore"];
-  const cities = ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Multan"];
-  const providers = ["Jazz", "Zong", "Telenor", "Ufone", "Warid"];
-  const index = cleanQuery.length % 5;
-  const mockOwner = {
-    name: fakeNames[cleanQuery.length % fakeNames.length],
-    father_name: `Muhammad ${fakeNames[cleanQuery.length % fakeNames.length].split(' ')[0]}`,
-    cnic: isCnic ? cleanQuery : `37405-${Math.floor(1000000 + cleanQuery.slice(-5) % 9000000)}-${Math.floor(10 + (cleanQuery.length % 89))}`,
-    number: isCnic ? `03${Math.floor(100000000 + (parseInt(cleanQuery.slice(-6)) % 900000000))}` : cleanQuery,
-    address: `${addresses[cleanQuery.length % addresses.length]}, ${cities[index % cities.length]}`,
-    operator: providers[cleanQuery.length % providers.length],
-    issued_date: `20${Math.floor(15 + (cleanQuery.length % 8))}-0${(cleanQuery.length % 9)+1}-${10+(cleanQuery.length % 20)}`,
-    status: "ACTIVE"
-  };
-  if(!isCnic && cleanQuery.length >= 10) {
-    mockOwner.number = cleanQuery.startsWith('92') ? cleanQuery : cleanQuery;
-    mockOwner.cnic = `35202-${Math.floor(5000000 + (parseInt(cleanQuery.slice(-7)) % 7000000))}-${Math.floor(1+(cleanQuery.length%9))}`;
-  }
-  return {
-    status: "success",
-    data: [{
-      "Full Name": mockOwner.name,
-      "Mobile Number": mockOwner.number,
-      "CNIC": mockOwner.cnic,
-      "Father Name": mockOwner.father_name,
-      "Address": mockOwner.address,
-      "Network Operator": mockOwner.operator,
-      "Issue Date": mockOwner.issued_date,
-      "SIM Status": mockOwner.status
-    }]
-  };
-}
-
-async function performSearch(query) {
-  if (!query || query.trim().length < 7) {
-    alert("⚠️ Please enter a valid mobile number (min 7 digits) or CNIC (12-13 digits)");
-    return;
-  }
-  if (isSearching) return;
-  isSearching = true;
-  showLoading();
-
-  try {
-    // Attempt real API call
-    const encoded = encodeURIComponent(query.trim());
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000);
-    
-    let apiResponse = null;
-    let apiSuccess = false;
-    try {
-      const response = await fetch(API_ENDPOINT + encoded, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (response.ok) {
-        const json = await response.json();
-        if (json && (json.status === 'success' || (json.data && (Array.isArray(json.data) ? json.data.length : Object.keys(json.data).length)))) {
-          apiResponse = json;
-          apiSuccess = true;
-        }
-      }
-    } catch (err) {
-      console.warn("API endpoint fallback, using demo generator", err);
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const query = input.value.trim();
+    if(query.length < 4) {
+      alert('Enter valid number or CNIC (min 4 digits)');
+      return;
     }
-    
-    let finalData = null;
-    if (apiSuccess && apiResponse && apiResponse.data) {
-      finalData = apiResponse;
-    } else {
-      // generate legal demo mock data instantly -> ensures response always appears
-      finalData = generateMockData(query.trim());
-    }
-    
-    setTimeout(() => {
-      renderGrid(finalData, query);
-      isSearching = false;
-    }, 300);
-    
-  } catch (error) {
-    console.error(error);
-    resultsContent.innerHTML = `<div class="error-card"><i class="fas fa-exclamation-triangle"></i> <strong>Connection error</strong><br>Using local secure demo data..</div>`;
-    // provide fallback even on catastrophic error:
-    const fallback = generateMockData(query.trim());
-    renderGrid(fallback, query);
-    isSearching = false;
-  }
-}
 
-function renderGrid(apiObj, rawQuery) {
-  let dataRecords = [];
-  if (apiObj && apiObj.data) {
-    if (Array.isArray(apiObj.data)) dataRecords = apiObj.data;
-    else if (typeof apiObj.data === 'object') dataRecords = [apiObj.data];
-  } else if (apiObj && Array.isArray(apiObj)) dataRecords = apiObj;
-  else {
-    dataRecords = [generateMockData(rawQuery).data[0]];
-  }
-  
-  if (!dataRecords || dataRecords.length === 0) {
-    resultsContent.innerHTML = `<div class="error-card"><i class="fas fa-database"></i> No Records Found - Enter valid number (demo mode shows sample)</div>`;
     resultsContainer.classList.add('active');
-    return;
-  }
-  
-  let html = `<div class="data-grid">`;
-  dataRecords.forEach((record, idx) => {
-    // extract key-value pairs
-    let entries = Object.entries(record).filter(([k]) => !k.toLowerCase().includes('response_code') && !k.toLowerCase().includes('credit'));
-    if(entries.length === 0) entries = Object.entries(record);
-    
-    html += `<div class="data-card">
-              <div class="card-icon"><i class="fas fa-id-card"></i></div>
-              <div class="card-label">RECORD ${idx+1} • PREMIUM FETCH</div>`;
-    for (let [key, val] of entries) {
-      let displayKey = key.replace(/_/g, ' ').toUpperCase();
-      if(val === undefined || val === null) val = "N/A";
-      html += `<div style="margin-bottom: 16px;">
-                <div class="card-label">${displayKey}</div>
-                <div class="card-value">${escapeHtml(String(val))}</div>
-              </div>`;
+    resultsContent.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><br>Resonating with Database...</div>';
+
+    try {
+      const response = await fetch(`https://amscript.xyz/PublicApi/Siminfo.php?number=${query}`);
+      const json = await response.json();
+
+      if(json.status === 'success' && json.data) {
+        const record = Array.isArray(json.data) ? json.data[0] : json.data;
+        displayResults(record);
+      } else {
+        resultsContent.innerHTML = '<div class="error-message"><i class="fas fa-skull"></i> No Data Found</div>';
+      }
+    } catch(err) {
+      resultsContent.innerHTML = '<div class="error-message"><i class="fas fa-bug"></i> API Connection Failed</div>';
     }
-    html += `</div>`;
   });
-  html += `</div><div style="margin-top: 20px; font-size: 0.8rem; text-align: center; opacity:0.7;"><i class="fas fa-shield-alt"></i> Secured demo environment • Data for authorized simulation only</div>`;
-  resultsContent.innerHTML = html;
-  resultsContainer.classList.add('active');
-}
-
-function escapeHtml(str) {
-  return str.replace(/[&<>]/g, function(m) {
-    if(m === '&') return '&amp;';
-    if(m === '<') return '&lt;';
-    if(m === '>') return '&gt;';
-    return m;
-  }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-    return c;
-  });
-}
-
-searchForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  let rawValue = searchInput.value.trim();
-  if(rawValue === "") {
-    alert("Please enter a mobile number or CNIC");
-    return;
-  }
-  performSearch(rawValue);
 });
-
-// Optional ENTER already handled by form
-// also Add subtle hover effects
-
-// For sidebar: if any menu click, close sidebar after link action (optional)
-document.querySelectorAll('.menu-item').forEach(link => {
-  link.addEventListener('click', () => setTimeout(() => closeMenu(), 150));
-});
-
-// initial UI
-console.log("Cyber Database engine ready — fully legal demo with smart fallback");
 </script>
 </body>
-</html>
+  </html>
