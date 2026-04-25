@@ -1,292 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S4L4R-X • Public SIM Database</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S4L4R-X • SIM DATABASE</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
 
-        body {
-            background: #0a0a0e;
-            font-family: 'Courier New', monospace;
-            min-height: 100vh;
-            padding: 40px 20px;
-            color: #ff0041;
-        }
+:root {
+  --primary-red: #ff0041;
+  --secondary-red: #ff0088;
+  --dark-bg: #0a0a0e;
+  --glass-bg: rgba(20, 10, 15, 0.6);
+  --glass-border: rgba(255, 0, 65, 0.25);
+  --glow-color: #ff0041;
+  --text-primary: #ff0041;
+  --text-secondary: #ff88aa;
+}
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+[data-theme="light"] {
+  --primary-red: #cc0033;
+  --secondary-red: #ff0044;
+  --dark-bg: #f5e8e9;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(204, 0, 51, 0.3);
+  --glow-color: #cc0033;
+  --text-primary: #4d001a;
+  --text-secondary: #660022;
+}
 
-        h1 {
-            text-align: center;
-            font-size: 28px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 15px #ff0041;
-            margin-bottom: 10px;
-        }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .sub {
-            text-align: center;
-            color: #ff88aa;
-            margin-bottom: 40px;
-            font-size: 14px;
-        }
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--dark-bg);
+  background-image: radial-gradient(circle at 20% 50%, rgba(255, 0, 65, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(255, 0, 136, 0.08) 0%, transparent 50%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: all 0.5s ease;
+}
 
-        .search-card {
-            background: rgba(20, 10, 15, 0.7);
-            border: 2px solid #ff0041;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 0 30px rgba(255, 0, 65, 0.2);
-        }
+/* Welcome Popup */
+.welcome-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(15px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+.popup-content {
+  background: linear-gradient(145deg, rgba(30, 10, 15, 0.95), rgba(20, 5, 10, 0.95));
+  border: 3px solid var(--primary-red);
+  border-radius: 30px;
+  padding: 50px 40px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(255, 0, 65, 0.5);
+  animation: popupSlide 0.5s ease;
+}
+.popup-icon { font-size: 72px; color: var(--primary-red); margin-bottom: 25px; animation: bounce 2s infinite; }
+.popup-title { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 900; color: var(--primary-red); text-shadow: 0 0 30px var(--glow-color); margin-bottom: 15px; }
+.popup-text { font-size: 18px; color: var(--text-secondary); margin-bottom: 35px; }
+.popup-btn { padding: 18px 35px; border: none; border-radius: 15px; font-size: 18px; font-weight: 700; cursor: pointer; margin: 0 10px; }
+.popup-btn.join { background: var(--primary-red); color: white; box-shadow: 0 0 30px rgba(255, 0, 65, 0.6); }
+.popup-btn.cancel { background: transparent; border: 2px solid var(--primary-red); color: var(--primary-red); }
 
-        .input-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 15px 30px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo-container { display: flex; align-items: center; gap: 15px; }
+.logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary-red); box-shadow: 0 0 25px var(--glow-color); }
+.logo-text { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 900; color: var(--primary-red); text-shadow: 0 0 20px var(--glow-color); }
+.nav-controls { display: flex; gap: 20px; }
+.theme-toggle, .menu-toggle {
+  background: transparent;
+  border: 2px solid var(--primary-red);
+  color: var(--primary-red);
+  padding: 8px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.menu-toggle { font-size: 20px; }
 
-        input {
-            flex: 1;
-            padding: 15px 20px;
-            background: #000;
-            border: 2px solid #ff0041;
-            border-radius: 12px;
-            color: #ff0041;
-            font-size: 18px;
-            font-family: monospace;
-            outline: none;
-        }
-
-        input::placeholder {
-            color: #ff88aa;
-            opacity: 0.6;
-        }
-
-        button {
-            padding: 15px 30px;
-            background: transparent;
-            border: 2px solid #ff0041;
-            border-radius: 12px;
-            color: #ff0041;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #ff0041;
-            color: #000;
-            box-shadow: 0 0 20px #ff0041;
-        }
-
-        .result-card {
-            background: rgba(20, 10, 15, 0.7);
-            border: 2px solid #ff0041;
-            border-radius: 20px;
-            padding: 25px;
-            margin-top: 20px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .result-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #ff0041;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        .result-header i {
-            font-size: 32px;
-        }
-
-        .data-row {
-            display: flex;
-            padding: 12px 0;
-            border-bottom: 1px dashed rgba(255, 0, 65, 0.3);
-        }
-
-        .data-label {
-            width: 100px;
-            font-weight: bold;
-            color: #ff88aa;
-        }
-
-        .data-value {
-            flex: 1;
-            word-break: break-word;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 50px;
-        }
-
-        .loading i {
-            font-size: 48px;
-            animation: spin 1s linear infinite;
-        }
-
-        .error {
-            text-align: center;
-            padding: 40px;
-            color: #ff4444;
-            border: 2px solid #ff4444;
-            border-radius: 20px;
-            margin-top: 20px;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            padding: 20px;
-            color: #ff88aa;
-            font-size: 12px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 600px) {
-            .data-row { flex-direction: column; }
-            .data-label { width: auto; margin-bottom: 5px; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>⛧ S4L4R-X SIM DATABASE ⛧</h1>
-    <div class="sub">PUBLIC API • UNFILTERED • FREE TIER</div>
-
-    <div class="search-card">
-        <form id="searchForm">
-            <div class="input-group">
-                <input type="text" id="searchInput" placeholder="Enter mobile number (without 0)" autocomplete="off" required>
-                <button type="submit">
-                    <i class="fas fa-search"></i> RESONATE
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <div id="resultsArea"></div>
-
-    <footer>
-        API: amscript.xyz/PublicApi/Siminfo.php<br>
-        Developed by SALAR KING | Shadow Cyber Ops
-    </footer>
-</div>
-
-<script>
-    const API_BASE = 'https://amscript.xyz/PublicApi/Siminfo.php?number=';
-
-    async function searchSIM(number) {
-        const resultsDiv = document.getElementById('resultsArea');
-        resultsDiv.innerHTML = `<div class="loading"><i class="fas fa-spinner fa-spin"></i><br>Resonating with Codex Umbra...</div>`;
-
-        try {
-            const response = await fetch(API_BASE + number);
-            const data = await response.json();
-
-            if (data.success === true && data.data && data.data.length > 0) {
-                displayResults(data.data);
-            } else {
-                resultsDiv.innerHTML = `<div class="error"><i class="fas fa-skull"></i><br>No records found for ${number}</div>`;
-            }
-        } catch (error) {
-            resultsDiv.innerHTML = `<div class="error"><i class="fas fa-bug"></i><br>API connection failed. Check network or CORS.</div>`;
-        }
-    }
-
-    function displayResults(records) {
-        const resultsDiv = document.getElementById('resultsArea');
-        let html = '';
-
-        records.forEach((record, index) => {
-            html += `
-                <div class="result-card">
-                    <div class="result-header">
-                        <i class="fas fa-dragon"></i>
-                        <span style="font-size: 20px; font-weight: bold;">RECORD #${index + 1}</span>
-                    </div>
-                    <div class="data-row">
-                        <div class="data-label"><i class="fas fa-user"></i> Full Name</div>
-                        <div class="data-value">${escapeHtml(record.full_name) || 'N/A'}</div>
-                    </div>
-                    <div class="data-row">
-                        <div class="data-label"><i class="fas fa-phone"></i> Phone</div>
-                        <div class="data-value">${escapeHtml(record.phone) || 'N/A'}</div>
-                    </div>
-                    <div class="data-row">
-                        <div class="data-label"><i class="fas fa-id-card"></i> CNIC</div>
-                        <div class="data-value">${escapeHtml(record.cnic) || 'N/A'}</div>
-                    </div>
-                    <div class="data-row">
-                        <div class="data-label"><i class="fas fa-map-marker-alt"></i> Address</div>
-                        <div class="data-value">${escapeHtml(record.address) || 'N/A'}</div>
-                    </div>
-                </div>
-            `;
-        });
-
-        resultsDiv.innerHTML = html;
-    }
-
-    function escapeHtml(str) {
-        if (!str) return str;
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
-    }
-
-    // Form handler
-    document.getElementById('searchForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const input = document.getElementById('searchInput');
-        let number = input.value.trim();
-
-        if (number.length < 4) {
-            alert('Enter at least 4 digits (number without 0)');
-            return;
-        }
-
-        // Remove any leading zero if user included
-        if (number.startsWith('0')) {
-            number = number.substring(1);
-        }
-
-        searchSIM(number);
-    });
-
-    // Optional: demo on page load with a test number
-    // searchSIM('3002610747');
-</script>
-
-</body>
-</html>  border: none;
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 320px;
+  height: 100vh;
+  background: var(--glass-bg);
+  backdrop-filter: blur(25px);
+  border-left: 1px solid var(--glass-border);
+  z-index: 1001;
+  transition: right 0.4s ease;
+  padding: 80px 30px 30px;
+}
+.sidebar.active { right: 0; }
+.sidebar-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
   color: var(--primary-red);
   font-size: 30px;
   cursor: pointer;
@@ -348,7 +186,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.search-btn:hover { background: var(--primary-red); color: white; }
+.search-btn:hover { background: var(--primary-red); color: white; transform: translateY(-2px); }
 
 /* Results */
 .results-container { display: none; }
@@ -385,7 +223,7 @@ footer { margin-top: 80px; padding: 40px 20px; text-align: center; background: v
 .credit-name { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900; color: var(--primary-red); text-shadow: 0 0 20px var(--glow-color); }
 
 @keyframes popupSlide { from { opacity: 0; transform: translateY(-50px) scale(0.8); } to { opacity: 1; transform: translateY(0) scale(1); } }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 768px) {
@@ -403,7 +241,7 @@ footer { margin-top: 80px; padding: 40px 20px; text-align: center; background: v
   <div class="popup-content">
     <div class="popup-icon"><i class="fas fa-dragon"></i></div>
     <div class="popup-title">CHAOS AWAKEN</div>
-    <div class="popup-text">Welcome to S4L4R-X DATABASE. Unfiltered SIM records. Resonance unlocked.</div>
+    <div class="popup-text">S4L4R-X SIM DATABASE • Unfiltered Access • Resonance Active</div>
     <div>
       <button class="popup-btn join" onclick="closePopup()">ENTER</button>
       <button class="popup-btn cancel" onclick="closePopup()">IGNORE</button>
@@ -428,7 +266,7 @@ footer { margin-top: 80px; padding: 40px 20px; text-align: center; background: v
   <button class="sidebar-close" onclick="toggleMenu()"><i class="fas fa-times"></i></button>
   <div class="menu-items">
     <a href="https://wa.me/923368231284" target="_blank" class="menu-item"><i class="fab fa-whatsapp"></i><span>Contact WhatsApp</span></a>
-    <a href="#" onclick="alert('Coming Soon')" class="menu-item"><i class="fas fa-broadcast-tower"></i><span>Join Channel</span></a>
+    <a href="#" onclick="alert('Join Channel - Coming Soon')" class="menu-item"><i class="fas fa-broadcast-tower"></i><span>Join Channel</span></a>
     <a href="#" onclick="alert('Premium Feature Coming Soon')" class="menu-item"><i class="fas fa-star"></i><span>Premium</span></a>
   </div>
 </div>
@@ -492,17 +330,44 @@ document.addEventListener('click', function(e) {
 });
 
 // Display Results
-function displayResults(data) {
-  const html = `
-    <div class="data-grid">
-      <div class="data-card"><div class="card-icon"><i class="fas fa-user"></i></div><div class="card-label">Full Name</div><div class="card-value">${data.name || data.full_name || 'N/A'}</div></div>
-      <div class="data-card"><div class="card-icon"><i class="fas fa-phone"></i></div><div class="card-label">Mobile Number</div><div class="card-value">${data.number || data.mobile || data.phone || 'N/A'}</div></div>
-      <div class="data-card"><div class="card-icon"><i class="fas fa-id-card"></i></div><div class="card-label">CNIC Number</div><div class="card-value">${data.cnic || data.id_number || data.id || 'N/A'}</div></div>
-      <div class="data-card"><div class="card-icon"><i class="fas fa-user-tie"></i></div><div class="card-label">Father Name</div><div class="card-value">${data.father_name || data.father || 'N/A'}</div></div>
-      <div class="data-card" style="grid-column:1/-1"><div class="card-icon"><i class="fas fa-map-marker-alt"></i></div><div class="card-label">Complete Address</div><div class="card-value">${data.address || data.add || 'N/A'}</div></div>
-    </div>
-  `;
+function displayResults(records) {
+  let html = '<div class="data-grid">';
+  records.forEach((record, idx) => {
+    html += `
+      <div class="data-card">
+        <div class="card-icon"><i class="fas fa-user"></i></div>
+        <div class="card-label">Record #${idx+1} - Full Name</div>
+        <div class="card-value">${escapeHtml(record.full_name) || 'N/A'}</div>
+      </div>
+      <div class="data-card">
+        <div class="card-icon"><i class="fas fa-phone"></i></div>
+        <div class="card-label">Phone Number</div>
+        <div class="card-value">${escapeHtml(record.phone) || 'N/A'}</div>
+      </div>
+      <div class="data-card">
+        <div class="card-icon"><i class="fas fa-id-card"></i></div>
+        <div class="card-label">CNIC Number</div>
+        <div class="card-value">${escapeHtml(record.cnic) || 'N/A'}</div>
+      </div>
+      <div class="data-card" style="grid-column:1/-1">
+        <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="card-label">Complete Address</div>
+        <div class="card-value">${escapeHtml(record.address) || 'N/A'}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
   document.getElementById('resultsContent').innerHTML = html;
+}
+
+function escapeHtml(str) {
+  if(!str) return str;
+  return str.replace(/[&<>]/g, function(m) {
+    if(m === '&') return '&amp;';
+    if(m === '<') return '&lt;';
+    if(m === '>') return '&gt;';
+    return m;
+  });
 }
 
 // Search Handler
@@ -514,9 +379,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
-    const query = input.value.trim();
+    let query = input.value.trim();
+    if(query.startsWith('0')) query = query.substring(1);
     if(query.length < 4) {
-      alert('Enter valid number or CNIC (min 4 digits)');
+      alert('Enter valid number (min 4 digits, without 0)');
       return;
     }
 
@@ -527,9 +393,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const response = await fetch(`https://amscript.xyz/PublicApi/Siminfo.php?number=${query}`);
       const json = await response.json();
 
-      if(json.status === 'success' && json.data) {
-        const record = Array.isArray(json.data) ? json.data[0] : json.data;
-        displayResults(record);
+      if(json.success === true && json.data && json.data.length > 0) {
+        displayResults(json.data);
       } else {
         resultsContent.innerHTML = '<div class="error-message"><i class="fas fa-skull"></i> No Data Found</div>';
       }
@@ -540,4 +405,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 </body>
-  </html>
+</html>
