@@ -298,17 +298,33 @@ footer { margin-top: 80px; padding: 40px 20px; text-align: center; background: v
 </footer>
 
 <script>
-// Popup
+// ================= POPUP =================
 function closePopup() {
   const popup = document.getElementById('welcomePopup');
-  if(popup) popup.style.display = 'none';
+  if (!popup) return;
+
+  popup.style.opacity = '0';
+  popup.style.transition = '0.3s';
+
+  setTimeout(() => {
+    popup.style.display = 'none';
+  }, 300);
 }
 
-// Theme
+// Attach popup buttons (clean way)
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".popup-btn").forEach(btn => {
+    btn.addEventListener("click", closePopup);
+  });
+});
+
+
+// ================= THEME =================
 function toggleTheme() {
   const body = document.body;
   const btn = document.querySelector('.theme-toggle i');
-  if(body.getAttribute('data-theme') === 'light') {
+
+  if (body.getAttribute('data-theme') === 'light') {
     body.removeAttribute('data-theme');
     btn.className = 'fas fa-moon';
   } else {
@@ -317,21 +333,35 @@ function toggleTheme() {
   }
 }
 
-// Menu
+
+// ================= SIDEBAR =================
 function toggleMenu() {
   document.getElementById('sidebar').classList.toggle('active');
 }
+
 document.addEventListener('click', function(e) {
   const sidebar = document.getElementById('sidebar');
   const menuBtn = document.querySelector('.menu-toggle');
-  if(sidebar && menuBtn && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+
+  if (sidebar && menuBtn && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
     sidebar.classList.remove('active');
   }
 });
 
-// Display Results
+
+// ================= SAFE HTML =================
+function escapeHtml(str) {
+  if (!str) return str;
+  return str.replace(/[&<>]/g, m =>
+    m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'
+  );
+}
+
+
+// ================= DISPLAY RESULTS =================
 function displayResults(records) {
   let html = '<div class="data-grid">';
+
   records.forEach((record, idx) => {
     html += `
       <div class="data-card">
@@ -339,16 +369,19 @@ function displayResults(records) {
         <div class="card-label">Record #${idx+1} - Full Name</div>
         <div class="card-value">${escapeHtml(record.full_name) || 'N/A'}</div>
       </div>
+
       <div class="data-card">
         <div class="card-icon"><i class="fas fa-phone"></i></div>
         <div class="card-label">Phone Number</div>
         <div class="card-value">${escapeHtml(record.phone) || 'N/A'}</div>
       </div>
+
       <div class="data-card">
         <div class="card-icon"><i class="fas fa-id-card"></i></div>
         <div class="card-label">CNIC Number</div>
         <div class="card-value">${escapeHtml(record.cnic) || 'N/A'}</div>
       </div>
+
       <div class="data-card" style="grid-column:1/-1">
         <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
         <div class="card-label">Complete Address</div>
@@ -356,21 +389,13 @@ function displayResults(records) {
       </div>
     `;
   });
+
   html += '</div>';
   document.getElementById('resultsContent').innerHTML = html;
 }
 
-function escapeHtml(str) {
-  if(!str) return str;
-  return str.replace(/[&<>]/g, function(m) {
-    if(m === '&') return '&amp;';
-    if(m === '<') return '&lt;';
-    if(m === '>') return '&gt;';
-    return m;
-  });
-}
 
-// Search Handler
+// ================= SEARCH =================
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('searchForm');
   const input = document.getElementById('searchInput');
@@ -379,36 +404,209 @@ document.addEventListener('DOMContentLoaded', function() {
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
+
     let query = input.value.trim();
-    if(query.startsWith('0')) query = query.substring(1);
-    if(query.length < 4) {
+
+    if (query.startsWith('0')) {
+      query = query.substring(1);
+    }
+
+    if (query.length < 4) {
       alert('Enter valid number (min 4 digits, without 0)');
       return;
     }
 
     resultsContainer.classList.add('active');
-    resultsContent.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><br>Resonating with Database...</div>';
+    resultsContent.innerHTML = `
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i><br>
+        Resonating with Database...
+      </div>
+    `;
 
     try {
-  const apiUrl = `https://amscript.xyz/PublicApi/Siminfo.php?number=${query}`;
-  const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`);
+      // ===== API WITH CORS FIX =====
+      const apiUrl = `https://amscript.xyz/PublicApi/Siminfo.php?number=${query}`;
+      const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`);
 
-  const text = await response.text();
-  const json = JSON.parse(text);
+      const text = await response.text();
+      const json = JSON.parse(text);
 
-  if(json.success === true && json.data && json.data.length > 0) {
-    displayResults(json.data);
-  } else {
-    resultsContent.innerHTML = '<div class="error-message"><i class="fas fa-skull"></i> No Data Found</div>';
-  }
-
-} catch(err) {
-  console.error(err);
-  resultsContent.innerHTML = '<div class="error-message"><i class="fas fa-bug"></i> API Connection Failed</div>';
+      if (json.success === true && json.data && json.data.length > 0) {
+        displayResults(json.data);
+      } else {
+        resultsContent.innerHTML = `
+          <div class="error-message">
+            <i class="fas fa-skull"></i> No Data Found
+          </div>
+        `;
       }
+
+    } catch (err) {
+      console.error(err);
+
+      resultsContent.innerHTML = `
+        <div class="error-message">
+          <i class="fas fa-bug"></i> API Connection Failed
+        </div>
+      `;
+    }
+  });
+});
+</script> <script>
+// ================= POPUP =================
+function closePopup() {
+  const popup = document.getElementById('welcomePopup');
+  if (!popup) return;
+
+  popup.style.opacity = '0';
+  popup.style.transition = '0.3s';
+
+  setTimeout(() => {
+    popup.style.display = 'none';
+  }, 300);
+}
+
+// Attach popup buttons (clean way)
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".popup-btn").forEach(btn => {
+    btn.addEventListener("click", closePopup);
+  });
+});
+
+
+// ================= THEME =================
+function toggleTheme() {
+  const body = document.body;
+  const btn = document.querySelector('.theme-toggle i');
+
+  if (body.getAttribute('data-theme') === 'light') {
+    body.removeAttribute('data-theme');
+    btn.className = 'fas fa-moon';
+  } else {
+    body.setAttribute('data-theme', 'light');
+    btn.className = 'fas fa-sun';
+  }
+}
+
+
+// ================= SIDEBAR =================
+function toggleMenu() {
+  document.getElementById('sidebar').classList.toggle('active');
+}
+
+document.addEventListener('click', function(e) {
+  const sidebar = document.getElementById('sidebar');
+  const menuBtn = document.querySelector('.menu-toggle');
+
+  if (sidebar && menuBtn && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+    sidebar.classList.remove('active');
+  }
+});
+
+
+// ================= SAFE HTML =================
+function escapeHtml(str) {
+  if (!str) return str;
+  return str.replace(/[&<>]/g, m =>
+    m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;'
+  );
+}
+
+
+// ================= DISPLAY RESULTS =================
+function displayResults(records) {
+  let html = '<div class="data-grid">';
+
+  records.forEach((record, idx) => {
+    html += `
+      <div class="data-card">
+        <div class="card-icon"><i class="fas fa-user"></i></div>
+        <div class="card-label">Record #${idx+1} - Full Name</div>
+        <div class="card-value">${escapeHtml(record.full_name) || 'N/A'}</div>
+      </div>
+
+      <div class="data-card">
+        <div class="card-icon"><i class="fas fa-phone"></i></div>
+        <div class="card-label">Phone Number</div>
+        <div class="card-value">${escapeHtml(record.phone) || 'N/A'}</div>
+      </div>
+
+      <div class="data-card">
+        <div class="card-icon"><i class="fas fa-id-card"></i></div>
+        <div class="card-label">CNIC Number</div>
+        <div class="card-value">${escapeHtml(record.cnic) || 'N/A'}</div>
+      </div>
+
+      <div class="data-card" style="grid-column:1/-1">
+        <div class="card-icon"><i class="fas fa-map-marker-alt"></i></div>
+        <div class="card-label">Complete Address</div>
+        <div class="card-value">${escapeHtml(record.address) || 'N/A'}</div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  document.getElementById('resultsContent').innerHTML = html;
+}
+
+
+// ================= SEARCH =================
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('searchForm');
+  const input = document.getElementById('searchInput');
+  const resultsContainer = document.getElementById('resultsContainer');
+  const resultsContent = document.getElementById('resultsContent');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    let query = input.value.trim();
+
+    if (query.startsWith('0')) {
+      query = query.substring(1);
+    }
+
+    if (query.length < 4) {
+      alert('Enter valid number (min 4 digits, without 0)');
+      return;
+    }
+
+    resultsContainer.classList.add('active');
+    resultsContent.innerHTML = `
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin"></i><br>
+        Resonating with Database...
+      </div>
+    `;
+
+    try {
+      // ===== API WITH CORS FIX =====
+      const apiUrl = `https://amscript.xyz/PublicApi/Siminfo.php?number=${query}`;
+      const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`);
+
+      const text = await response.text();
+      const json = JSON.parse(text);
+
+      if (json.success === true && json.data && json.data.length > 0) {
+        displayResults(json.data);
+      } else {
+        resultsContent.innerHTML = `
+          <div class="error-message">
+            <i class="fas fa-skull"></i> No Data Found
+          </div>
+        `;
+      }
+
+    } catch (err) {
+      console.error(err);
+
+      resultsContent.innerHTML = `
+        <div class="error-message">
+          <i class="fas fa-bug"></i> API Connection Failed
+        </div>
+      `;
     }
   });
 });
 </script>
-</body>
-</html>
