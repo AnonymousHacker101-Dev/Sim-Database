@@ -389,9 +389,8 @@ document.addEventListener('DOMContentLoaded', function() {
     resultsContainer.classList.add('active');
     resultsContent.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i><br>Resonating with Database...</div>';
 
-    try {
-      const response = await fetch(`https://cors-anywhere.herokuapp.com/https://amscript.xyz/PublicApi/Siminfo.php?number=${query}`);
-      const json = await response.json();
+    const apiUrl = `https://amscript.xyz/PublicApi/Siminfo.php?number=${query}`;
+const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`);
 
       if(json.success === true && json.data && json.data.length > 0) {
         displayResults(json.data);
